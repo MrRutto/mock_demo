@@ -5,6 +5,7 @@ const httpContext = require("express-http-context");
 const { createNamespace } = require("continuation-local-storage");
 const db = require("./config/database");
 const logger = require("./config/logger");
+const router = require("./routers/router");
 
 const newRequest = createNamespace("new_request");
 
@@ -24,7 +25,8 @@ app.use((req, res, next) => {
     next();
   });
 });
-logger.info("test");
+
+app.use('/api', router);
 
 db.TestDatabaseConnection();
 
@@ -32,8 +34,7 @@ db.TestDatabaseConnection();
 app.use((err, req, res, next) => {
   const error = new Error("Not found");
   logger.error(
-    `${err.status || 500} - ${err.message} - ${req.originalUrl} - ${
-      req.method
+    `${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method
     } - ${req.ip}`
   );
   // eslint-disable-next-line no-param-reassign
